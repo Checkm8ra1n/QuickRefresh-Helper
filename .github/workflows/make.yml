@@ -1,0 +1,46 @@
+name: Build QuickRefresh Tweak
+
+on:
+  push:
+    branches: [ "main", "develop" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      # 1️⃣ Checkout del repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2️⃣ Installa dipendenze: ldid, theos
+      - name: Install dependencies
+        run: |
+          brew install ldid
+          git clone --depth=1 https://github.com/theos/theos.git $HOME/theos
+
+      # 3️⃣ Imposta variabili THEOS
+      - name: Set THEOS env
+        run: |
+          echo "THEOS=$HOME/theos" >> $GITHUB_ENV
+          echo "PATH=$HOME/theos/bin:$PATH" >> $GITHUB_ENV
+
+      # 4️⃣ Build tweak
+      - name: Build tweak
+        run: |
+          cd QuickRefresh
+          make clean
+          make package
+
+      # 5️⃣ Mostra i file generati
+      - name: List generated packages
+        run: ls -la QuickRefresh/packages/
+
+      # 6️⃣ Upload release artifact
+      - name: Upload .deb to release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: QuickRefresh/packages/net.checkm8ra1n.quickrefresh_*.deb
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
