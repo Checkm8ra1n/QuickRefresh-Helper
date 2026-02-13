@@ -1,0 +1,9 @@
+Package: net.checkm8ra1n.quickrefresh
+Name: QuickRefresh
+Version: 0.0.1
+Architecture: iphoneos-arm64
+Description: Helper for QuickRefresh
+Maintainer: Checkm8ra1n
+Author: Checkm8ra1n
+Section: Tweaks
+Depends: mobilesubstrate, notifyutil
